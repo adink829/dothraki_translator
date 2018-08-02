@@ -28,7 +28,7 @@ const TranslateHandler = {
 
         return handlerInput.responseBuilder
             .speak(speechOutput)
-            .withSimpleCard(`Dothraki Translator`, `${phrase}`is`${translation}`)
+            .withSimpleCard(`Dothraki Translator`, `${phrase} is ${translation}`)
             .getResponse()
 
     }
