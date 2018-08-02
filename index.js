@@ -1,5 +1,5 @@
 const Alexa = require('ask-sdk')
-import axios from 'axios'
+// import axios from 'axios'
 
 const LaunchHandler = {
     canHandle(handlerInput) {
@@ -23,7 +23,7 @@ const TranslateHandler = {
     handle(handlerInput) {
         // let language = this.event.request.intent.slots.Language.value
         const phrase = this.event.request.intent.slots.PhraseToTranslate.value
-        const translation = await axios.post('http://api.funtranslations.com/translate/dothraki.json', phrase)
+        const translation = fetch.post('http://api.funtranslations.com/translate/dothraki.json', phrase)
         const speechOutput = `${phrase} is ${translation} in Dothraki`
 
         return handlerInput.responseBuilder
