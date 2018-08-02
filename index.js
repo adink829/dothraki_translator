@@ -1,10 +1,24 @@
 const Alexa = require('ask-sdk')
 import axios from 'axios'
 
+const LaunchHandler = {
+    canHandle(handlerInput) {
+        const request = handlerInput.requestEnvelope.request //gets input from the request
+        return request.type === 'Launch Request'
+    },
+    handle(handlerInput) {
+        const speechOutput = `What would you like to translate?`
+
+        return handlerInput.responseBuilder
+            .speak(speechOutput)
+            .getResponse()
+    }
+}
+
 const TranslateHandler = {
     canHandle(handlerInput) {
         const request = handlerInput.requestEnvelope.request //gets input from the request
-        return request.type === 'Launch Request' || (request.type === 'Intent Request' && request.intent.name === 'translate') //returns if intent is launch request (open Dothraki translator) or intent + translate (translate x to Dothraki)
+        return request.type === 'Intent Request' && request.intent.name === 'translate'
     },
     handle(handlerInput) {
         // let language = this.event.request.intent.slots.Language.value
@@ -19,24 +33,6 @@ const TranslateHandler = {
 
     }
 }
-
-// 'LaunchRequest': function () {
-//     this.emit(':ask', 'Welcome to the Dothraki translate skill. What would you like to translate?')
-// },
-
-// 'Translate': async function () {
-//     let language = this.event.request.intent.slots.Language.value
-//     let phrase = this.event.request.intent.slots.PhraseToTranslate.value
-
-//     await axios.post('http://api.funtranslations.com/translate/dothraki.json', phrase)
-//         .on('success', (payload) => {
-//             const translation = payload.contents.translated
-//             this.emit(':tell', `${phrase} is ${translation} in ${language} `)
-//         }).on('error', (payload) => {
-//             this.emit(':tell', 'Sorry, translation was unsuccessful. Want to try a different phrase?')
-//         })
-// }
-// }
 
 const HelpHandler = {
     canHandle(handlerInput) {
@@ -93,6 +89,7 @@ const ErrorHandler = {
 const skillBuilder = Alexa.SkillBuilders.custom()
 
 exports.handler = skillBuilder.addRequestHandlers(
+    LaunchHandler,
     TranslateHandler,
     HelpHandler,
     FallbackHandler,
