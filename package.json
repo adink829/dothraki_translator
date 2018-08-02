@@ -11,6 +11,7 @@
   "dependencies": {
     "alexa-sdk": "^1.0.25",
     "ask-sdk": "^2.0.7",
-    "ask-sdk-core": "^2.0.7"
+    "ask-sdk-core": "^2.0.7",
+    "ask-sdk-model": "^1.4.0"
   }
 }

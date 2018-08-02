@@ -1,4 +1,4 @@
-const Alexa = require('ask-sdk-core')
+const Alexa = require('ask-sdk')
 import axios from 'axios'
 
 const TranslateHandler = {
