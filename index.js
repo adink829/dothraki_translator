@@ -1,4 +1,4 @@
-const Alexa = require('alexa-sdk')
+const Alexa = require('ask-sdk-core')
 import axios from 'axios'
 
 const TranslateHandler = {
@@ -8,7 +8,7 @@ const TranslateHandler = {
     },
     handle(handlerInput) {
         // let language = this.event.request.intent.slots.Language.value
-        let phrase = this.event.request.intent.slots.PhraseToTranslate.value
+        const phrase = this.event.request.intent.slots.PhraseToTranslate.value
         const translation = await axios.post('http://api.funtranslations.com/translate/dothraki.json', phrase)
         const speechOutput = `${phrase} is ${translation} in Dothraki`
 
@@ -60,7 +60,7 @@ const FallbackHandler = {
         return handlerInput.responseBuilder
             .speak(`I can't translate that phrase. Would you like to try another?`)
             .reprompt(`What would you like to translate?`)
-            .getResponse();
+            .getResponse()
     },
 }
 
@@ -72,7 +72,7 @@ const StopHandler = {
     handle(handlerInput) {
         return handlerInput.responseBuilder
             .speak(`See you later!`)
-            .getResponse();
+            .getResponse()
     },
 }
 
