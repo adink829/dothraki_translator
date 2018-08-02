@@ -4,13 +4,13 @@ const Alexa = require('ask-sdk')
 const LaunchHandler = {
     canHandle(handlerInput) {
         const request = handlerInput.requestEnvelope.request //gets input from the request
-        return request.type === 'Launch Request'
+        return request.type === 'LaunchRequest'
     },
     handle(handlerInput) {
         const speechOutput = `What would you like to translate?`
-
-        return handlerInput.responseBuilder
+        return handlerInput.responseBuilder //need to figure out how to keep the session open using response builder or refactor
             .speak(speechOutput)
+            .reprompt(`What would you like to translate?`)
             .getResponse()
     }
 }
@@ -18,11 +18,12 @@ const LaunchHandler = {
 const TranslateHandler = {
     canHandle(handlerInput) {
         const request = handlerInput.requestEnvelope.request //gets input from the request
-        return request.type === 'Intent Request' && request.intent.name === 'translate'
+        return request.type === 'IntentRequest' && request.intent.name === 'translate' //checks if its a translate intent request
     },
     handle(handlerInput) {
         // let language = this.event.request.intent.slots.Language.value
-        const phrase = this.event.request.intent.slots.PhraseToTranslate.value
+        const phrase = handlerInput.requestEnvelope.request.intent.slots.phraseToTranslate.value
+        console.log(phrase)
         const translation = fetch.post('http://api.funtranslations.com/translate/dothraki.json', phrase)
         const speechOutput = `${phrase} is ${translation} in Dothraki`
 
@@ -43,13 +44,13 @@ const HelpHandler = {
         return handlerInput.responseBuilder
             .speak(`You can tell me a phrase to translate, or say exit.`)
             .reprompt(`What would you like to translate?`)
-            .getResponse();
+            .getResponse()
     },
 }
 
 const FallbackHandler = {
     canHandle(handlerInput) {
-        const request = handlerInput.requestEnvelope.request;
+        const request = handlerInput.requestEnvelope.request
         return request.type === 'IntentRequest' && request.intent.name === 'AMAZON.FallbackIntent'
     },
     handle(handlerInput) {
@@ -77,7 +78,7 @@ const ErrorHandler = {
         return true
     },
     handle(handlerInput, error) {
-        console.log(`Error handled: ${error.message}`);
+        console.log(`Error handled: ${error.message}`)
 
         return handlerInput.responseBuilder
             .speak(`Sorry, we're having some trouble right now.`)
@@ -93,7 +94,7 @@ exports.handler = skillBuilder.addRequestHandlers(
     TranslateHandler,
     HelpHandler,
     FallbackHandler,
-    StopHandler,
+    StopHandler
 )
     .addErrorHandlers(ErrorHandler)
     .lambda()
