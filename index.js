@@ -1,5 +1,5 @@
 const Alexa = require('ask-sdk')
-// import axios from 'axios'
+const axios = require('axios')
 
 const LaunchHandler = {
     canHandle(handlerInput) {
@@ -8,7 +8,7 @@ const LaunchHandler = {
     },
     handle(handlerInput) {
         const speechOutput = `What would you like to translate?`
-        return handlerInput.responseBuilder //need to figure out how to keep the session open using response builder or refactor
+        return handlerInput.responseBuilder
             .speak(speechOutput)
             .reprompt(`What would you like to translate?`)
             .getResponse()
@@ -17,21 +17,31 @@ const LaunchHandler = {
 
 const TranslateHandler = {
     canHandle(handlerInput) {
-        const request = handlerInput.requestEnvelope.request //gets input from the request
-        return request.type === 'IntentRequest' && request.intent.name === 'translate' //checks if its a translate intent request
+        const request = handlerInput.requestEnvelope.request
+        return request.type === 'IntentRequest' && request.intent.name === 'translate'
     },
-    handle(handlerInput) {
-        // let language = this.event.request.intent.slots.Language.value
+    async handle(handlerInput) {
         const phrase = handlerInput.requestEnvelope.request.intent.slots.phraseToTranslate.value
-        console.log(phrase)
-        const translation = fetch.post('http://api.funtranslations.com/translate/dothraki.json', phrase)
-        const speechOutput = `${phrase} is ${translation} in Dothraki`
+        try {
+            const req = { 'text': phrase }
+            const config = {
+                headers: {
+                    'Content-Type': 'application/json;charset=UTF-8',
+                    'X-Funtranslations-Api-Secret': process.env.API_KEY
+                }
+            }
+            const { data } = await axios.post('http://api.funtranslations.com/translate/dothraki.json', req, config)
+            const translation = data.contents.translated
+            const speechOutput = `${phrase} is ${translation} in Dothraki`
 
-        return handlerInput.responseBuilder
-            .speak(speechOutput)
-            .withSimpleCard(`Dothraki Translator`, `${phrase} is ${translation}`)
-            .getResponse()
-
+            return handlerInput.responseBuilder
+                .speak(speechOutput)
+                .withSimpleCard(`Dothraki Translator`, `${phrase} is ${translation} `)
+                .reprompt(`Would you like to translate something else?`)
+                .getResponse()
+        } catch (err) {
+            console.log(err)
+        }
     }
 }
 
@@ -43,7 +53,7 @@ const HelpHandler = {
     handle(handlerInput) {
         return handlerInput.responseBuilder
             .speak(`You can tell me a phrase to translate, or say exit.`)
-            .reprompt(`What would you like to translate?`)
+            .reprompt(`What would you like to translate ? `)
             .getResponse()
     },
 }
