@@ -3,7 +3,7 @@ const axios = require('axios')
 
 const LaunchHandler = {
     canHandle(handlerInput) {
-        const request = handlerInput.requestEnvelope.request //gets input from the request
+        const request = handlerInput.requestEnvelope.request
         return request.type === 'LaunchRequest'
     },
     handle(handlerInput) {
@@ -48,7 +48,7 @@ const TranslateHandler = {
 const HelpHandler = {
     canHandle(handlerInput) {
         const request = handlerInput.requestEnvelope.request
-        return request.type === 'IntentRequest' && request.intent.name === 'AMAZON.HelpIntent' //returns if there is a intent request for help
+        return request.type === 'IntentRequest' && request.intent.name === 'AMAZON.HelpIntent'
     },
     handle(handlerInput) {
         return handlerInput.responseBuilder
