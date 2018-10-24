@@ -32,7 +32,7 @@ const TranslateHandler = {
             }
             const { data } = await axios.post('http://api.funtranslations.com/translate/dothraki.json', req, config)
             const translation = data.contents.translated
-            const speechOutput = `${phrase} is ${translation} in Dothraki`
+            const speechOutput = `${phrase} is ${translation} in Dothraki. You can give me another phrase to translate, or say exit.`
 
             return handlerInput.responseBuilder
                 .speak(speechOutput)
@@ -53,7 +53,7 @@ const HelpHandler = {
     handle(handlerInput) {
         return handlerInput.responseBuilder
             .speak(`You can tell me a phrase to translate, or say exit.`)
-            .reprompt(`What would you like to translate ? `)
+            .reprompt(`What would you like to translate? `)
             .getResponse()
     },
 }
